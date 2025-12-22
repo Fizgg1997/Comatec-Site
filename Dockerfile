@@ -37,6 +37,7 @@ ENV COMPOSER_MEMORY_LIMIT=-1
 RUN php -v && php -m && composer -V \
  && composer install -vvv --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts
 
+RUN mkdir -p database \ && touch database/database.sqlite \ && chown -R www-data:www-data database
 # Build frontend if present
 RUN if [ -f package.json ]; then npm ci || npm install; npm run build; fi
 RUN touch database/database.sqlite
