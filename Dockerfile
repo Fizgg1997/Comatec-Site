@@ -30,6 +30,8 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install PHP deps (non-interactive, less noisy)
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_MEMORY_LIMIT=-1
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts
 
 # Build frontend assets (only if package.json exists)
