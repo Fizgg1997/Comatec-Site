@@ -39,7 +39,7 @@ RUN php -v && php -m && composer -V \
 
 # Build frontend if present
 RUN if [ -f package.json ]; then npm ci || npm install; npm run build; fi
-
+RUN touch database/database.sqlite
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
