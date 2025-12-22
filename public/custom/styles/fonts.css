@@ -1,0 +1,95 @@
+@font-face {
+    font-family: "barlow-boldItalic";
+    src: url('../fonts/Barlow-BoldItalic.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "barlow-bold";
+    src: url('../fonts/Barlow-Bold.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'barlow-regular';
+    src: url('../fonts/Barlow-Regular.ttf');
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'barlow-light';
+    src: url('../fonts/Barlow-Light.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'barlow-extraLight';
+    src: url('../fonts/Barlow-ExtraLight.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'barlow-semiBold';
+    src: url('../fonts/Barlow-SemiBold.ttf');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'barlow-extraBold';
+    src: url('../fonts/Barlow-ExtraBold.ttf');
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'barlow-medium';
+    src: url('../fonts/Barlow-Medium.ttf');
+    font-display: swap;
+}
+
+
+
+@font-face {
+    font-family: 'myriadPro-italic';
+    src: url('../fonts/MyriadPro-It.otf');
+    font-display: swap;
+}
+
+
+
+.b-regular {
+    font-family: "barlow-regular";
+}
+
+.b-boldItalic {
+    font-family: "barlow-boldItalic" !important;
+}
+
+.b-light {
+    font-family: "barlow-light";
+}
+
+.b-extraLight {
+    font-family: "barlow-extraLight";
+}
+
+.b-semibold {
+    font-family: "barlow-semiBold";
+}
+
+.b-medium {
+    font-family: "barlow-medium";
+}
+
+.b-extraBold {
+    font-family: "barlow-extraBold";
+}
+
+.b-bold {
+    font-family: "barlow-bold";
+}
+
+.my-italic {
+    font-family: "myriadPro-italic";
+}
