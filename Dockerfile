@@ -42,6 +42,7 @@ RUN if [ -f package.json ]; then npm ci || npm install; npm run build; fi
 RUN touch database/database.sqlite
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
+RUN php artisan config:clear
 
 # Apache docroot -> public
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
