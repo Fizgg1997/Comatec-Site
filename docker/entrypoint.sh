@@ -1,10 +1,8 @@
 #!/bin/sh
 set -e
 
-# If composer deps are missing, fail with clear message
 if [ ! -f /var/www/html/vendor/autoload.php ]; then
-  echo "ERROR: vendor/autoload.php missing. Composer install did not run during build."
-  echo "Make sure Render is deploying using Dockerfile OR run composer install in build step."
+  echo "ERROR: vendor/autoload.php is missing. Composer install did not run."
   exit 1
 fi
 
