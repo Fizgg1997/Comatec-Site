@@ -1,19 +1,24 @@
-#!/bin/sh
-set -e
+FROM php:8.2-cli
 
-if [ ! -f /var/www/html/vendor/autoload.php ]; then
-  echo "ERROR: vendor/autoload.php is missing. Composer install did not run."
-  exit 1
-fi
+WORKDIR /var/www/html
 
-rm -f bootstrap/cache/config.php bootstrap/cache/routes-*.php bootstrap/cache/events-*.php bootstrap/cache/services.php || true
+# System deps + PHP extensions (adjust if you need more)
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev \
+  && docker-php-ext-install pdo pdo_mysql zip \
+  && rm -rf /var/lib/apt/lists/*
 
-mkdir -p storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-composer install --no-dev --optimize-autoloader
-php artisan key:generate
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
-exec apache2-foreground
+# Copy app
+COPY . .
+
+# Install PHP deps (this creates vendor/autoload.php)
+RUN composer install --no-dev --optimize-autoloader
+
+# Laravel optimization (optional but good)
+RUN php artisan config:clear && php artisan cache:clear && php artisan view:clear || true
+
+# Railway provides PORT automatically
+CMD php -S 0.0.0.0:$PORT -t public
