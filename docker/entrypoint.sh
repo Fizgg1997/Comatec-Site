@@ -11,9 +11,9 @@ rm -f bootstrap/cache/config.php bootstrap/cache/routes-*.php bootstrap/cache/ev
 mkdir -p storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 
-php artisan config:clear || true
-php artisan cache:clear || true
-php artisan route:clear || true
-php artisan view:clear || true
-
+composer install --no-dev --optimize-autoloader
+php artisan key:generate
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
 exec apache2-foreground
