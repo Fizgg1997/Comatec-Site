@@ -1,19 +1,21 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-RUN a2enmod rewrite
-
-# System deps
+# System deps for PHP extensions + imagick + node + build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git unzip curl zip \
-    libpng-dev libonig-dev libxml2-dev \
-    libzip-dev libicu-dev \
+    git unzip curl ca-certificates \
+    libzip-dev zlib1g-dev \
+    libicu-dev \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
     libgmp-dev \
     libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # PHP extensions
 RUN docker-php-ext-configure intl \
-    && docker-php-ext-install \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install \
     pdo pdo_mysql mbstring exif pcntl bcmath gd zip intl gmp
 
 # Imagick
@@ -35,7 +37,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_PROCESS_TIMEOUT=0
 
-# Install PHP deps (this creates vendor/)
+# Install PHP deps
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress
 
 # Build frontend if present
@@ -45,14 +47,6 @@ RUN if [ -f package.json ]; then npm ci --no-audit --no-fund || npm install; npm
 RUN mkdir -p storage bootstrap/cache \
  && chown -R www-data:www-data storage bootstrap/cache
 
-# Apache docroot -> public
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
- && sed -ri 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Entrypoint
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-EXPOSE 80
-ENTRYPOINT ["/entrypoint.sh"]
+# IMPORTANT: Railway provides $PORT
+EXPOSE 8080
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public"]
