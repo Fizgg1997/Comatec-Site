@@ -9,8 +9,19 @@ echo "DB_PORT=$DB_PORT"
 echo "DB_DATABASE=$DB_DATABASE"
 echo "DB_USERNAME=$DB_USERNAME"
 
-# If you want migrations always (recommended first time):
-php artisan migrate --force || true
+
+php artisan config:clear || true
+php artisan cache:clear || true
+php artisan route:clear || true
+php artisan view:clear || true
+
+# Run migrations
+php artisan migrate --force
+
+# If your tables/data are created via seeding, enable this:
+php artisan db:seed --force || true
+
+
 
 # If you have Voyager and seeders you can add later:
 # php artisan db:seed --force || true
