@@ -4,29 +4,32 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+return new class extends Migration {
+    public function up(): void
     {
+        // ✅ Prevent crash if table doesn't exist
+        if (!Schema::hasTable('our_clients')) {
+            return;
+        }
+
         Schema::table('our_clients', function (Blueprint $table) {
-            $table->enum('type', ['client', 'partner'])->default('client');
+            // Example: only add if column not exists
+            if (!Schema::hasColumn('our_clients', 'type')) {
+                $table->string('type')->nullable();
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
+        if (!Schema::hasTable('our_clients')) {
+            return;
+        }
+
         Schema::table('our_clients', function (Blueprint $table) {
-            $table->dropColumn('type');
+            if (Schema::hasColumn('our_clients', 'type')) {
+                $table->dropColumn('type');
+            }
         });
     }
 };
