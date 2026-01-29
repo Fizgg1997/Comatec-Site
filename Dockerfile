@@ -29,7 +29,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get update && apt-get install -y --no-install-recommends nodejs \
     && node -v && npm -v \
     && rm -rf /var/lib/apt/lists/*
-RUN php artisan migrate --force || true
+
 WORKDIR /var/www/html
 COPY . .
 
@@ -47,6 +47,12 @@ RUN if [ -f package.json ]; then npm ci --no-audit --no-fund || npm install; npm
 RUN mkdir -p storage bootstrap/cache \
  && chown -R www-data:www-data storage bootstrap/cache
 
-# IMPORTANT: Railway provides $PORT
+# Clear caches (good for production containers)
+RUN php artisan config:clear && php artisan cache:clear && php artisan view:clear || true
+
+# OPTIONAL: run migrations during build (testing only)
+# Better is to run migrations at runtime, but for now this is ok:
+RUN php artisan migrate --force || true
+
 EXPOSE 8080
 CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public"]
