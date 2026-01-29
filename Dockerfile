@@ -55,4 +55,4 @@ RUN php artisan config:clear && php artisan cache:clear && php artisan view:clea
 RUN php artisan migrate --force || true
 
 EXPOSE 8080
-CMD ["sh", "-c", "php artisan config:clear && php artisan cache:clear && php artisan route:clear && php artisan view:clear; php artisan migrate --force || true; php -S 0.0.0.0:${PORT:-8080} -t public"]
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public"]
