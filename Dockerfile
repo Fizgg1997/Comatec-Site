@@ -52,7 +52,7 @@ RUN php artisan config:clear && php artisan cache:clear && php artisan view:clea
 
 # OPTIONAL: run migrations during build (testing only)
 # Better is to run migrations at runtime, but for now this is ok:
-RUN php artisan migrate --force || true
+
 
 EXPOSE 8080
 CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public"]
