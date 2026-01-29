@@ -1,27 +1,18 @@
 #!/bin/sh
 set -e
 
-FROM php:8.2-cli
+# Optional: show env quickly (helps debug in Railway logs)
+echo "APP_ENV=$APP_ENV"
+echo "APP_URL=$APP_URL"
+echo "DB_HOST=$DB_HOST"
+echo "DB_PORT=$DB_PORT"
+echo "DB_DATABASE=$DB_DATABASE"
+echo "DB_USERNAME=$DB_USERNAME"
 
-WORKDIR /var/www/html
+# If you want migrations always (recommended first time):
+php artisan migrate --force || true
 
-# System deps + PHP extensions (adjust if you need more)
-RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev \
-  && docker-php-ext-install pdo pdo_mysql zip \
-  && rm -rf /var/lib/apt/lists/*
+# If you have Voyager and seeders you can add later:
+# php artisan db:seed --force || true
 
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Copy app
-COPY . .
-
-# Install PHP deps (this creates vendor/autoload.php)
-RUN composer install --no-dev --optimize-autoloader
-
-# Laravel optimization (optional but good)
-RUN php artisan config:clear && php artisan cache:clear && php artisan view:clear || true
-
-# Railway provides PORT automatically
-CMD php -S 0.0.0.0:$PORT -t public
+exec "$@"
